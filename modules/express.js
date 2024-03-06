@@ -1,15 +1,26 @@
 const express = require("express");
 const { UserModel } = require("../src/models/user.model");
 
+const port = 8080;
 const app = express();
 
 app.use(express.json());
 
-const port = 8080;
+app.set("view engine", "ejs");
+app.set("views", "./src/views");
 
-app.get("/", (req, res) => {
-  res.contentType("application/html");
-  return res.status(200).send("<h1>API com express</h1>");
+app.use((req, res, next) => {
+  console.log(`Request Type: ${req.method}`);
+  console.log(`Content Type: ${req.headers["content-type"]}`);
+  console.log(`Date: ${new Date().toLocaleDateString()}`);
+
+  next();
+});
+
+app.get("/views/users", async (req, res) => {
+  const users = await UserModel.find({});
+
+  res.render("index", { users });
 });
 
 // Buscar todos usuários
@@ -65,4 +76,6 @@ app.delete("/users/:id", async (req, res) => {
   }
 });
 
-app.listen(port, () => console.log(`Iniciando app na porta: ${port}!`));
+app.listen(port, () =>
+  console.log(`App iniciando em http://localhost:${port}!`)
+);

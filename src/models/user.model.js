@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+// Definir o esquema para a coleção do mongoDB
 const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
@@ -22,6 +23,8 @@ const userSchema = new mongoose.Schema({
     minLength: 7,
   },
 });
+
+// O primeiro argumento é o nome singular da coleção à qual seu modelo se destina. O Mongoose procura automaticamente a versão plural e minúscula do nome do seu modelo.
 
 const UserModel = mongoose.model("User", userSchema);
 
