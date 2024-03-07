@@ -1,14 +1,38 @@
 const express = require("express");
+const session = require("express-session");
+const filleupload = require("express-fileupload");
+const cors = require("cors");
+
+const path = require("path");
 const { UserModel } = require("../src/models/user.model");
 
 const port = 8080;
+
 const app = express();
 
+// Definir o tipo Json no express
 app.use(express.json());
+
+//  Armazena os dados da sessão no servidor. Ele salva apenas o ID da sessão no cookie, não os dados da sessão.
+app.use(session({ secret: "qweasdrtyfghuioasdcvbkgqsicsujwvajdnfcujfgn" }));
+
+// -Permitir que os usuários enviem arquivos por formulário;
+// -Manipulação de Arquivos no Servidor;
+// -Limitação de Tamanho e Tipos de Arquivo.
+app.use(
+  filleupload({
+    useTempFiles: true,
+    tempFileDir: path.join(__dirname, "temp"),
+  })
+);
+
+// Liberar utilização da api com cors
+app.use(cors());
 
 app.set("view engine", "ejs");
 app.set("views", "./src/views");
 
+// Middleware
 app.use((req, res, next) => {
   console.log(`Request Type: ${req.method}`);
   console.log(`Content Type: ${req.headers["content-type"]}`);
@@ -77,5 +101,5 @@ app.delete("/users/:id", async (req, res) => {
 });
 
 app.listen(port, () =>
-  console.log(`App iniciando em http://localhost:${port}!`)
+  console.log(`App iniciando em http://localhost:${port}`)
 );
